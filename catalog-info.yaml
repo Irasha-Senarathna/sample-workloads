@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: sample-workloads
+  description: Vulnerable Go workload used to validate the Code Scanning fact retriever
+  annotations:
+    github.com/project-slug: Irasha-Senarathna/sample-workloads
+spec:
+  type: service
+  owner: john@example.com
+  lifecycle: experimental
