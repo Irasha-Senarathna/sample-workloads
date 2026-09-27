@@ -1,0 +1,35 @@
+name: Trivy Image Scan
+
+on:
+  workflow_dispatch: {}
+
+permissions: {}
+
+jobs:
+  scan:
+    name: Scan (go-greeter)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t sample-workloads/go-greeter:scan ./service-go-greeter
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: image
+          image-ref: sample-workloads/go-greeter:scan
+          format: sarif
+          output: trivy-results.sarif
+
+      - name: Upload results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@d1ba80a13dd99fba24a470575428917156a28b43 # v4
+        with:
+          sarif_file: trivy-results.sarif
+          category: go-greeter
